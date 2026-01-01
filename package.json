@@ -1,0 +1,16 @@
+{
+  "name": "teamspeak-alt",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "dev:api": "pnpm -r --filter @tsa/shared --filter @tsa/media-core --filter @tsa/api dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "tsx": "^4.16.2",
+    "ws": "^8.18.3"
+  }
+}

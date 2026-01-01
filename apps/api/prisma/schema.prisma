@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  // relations
+  memberships     Membership[]
+  messages        Message[]
+  ownedWorkspaces Workspace[]  @relation("WorkspaceOwner")
+
+  voiceParticipants VoiceParticipant[] @relation("UserVoiceParticipants")
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  // relations
+  owner    User         @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  channels Channel[]
+  members  Membership[]
+
+  voiceSessions VoiceSession[] @relation("WorkspaceVoiceSessions")
+
+  @@index([ownerId])
+}
+
+model Membership {
+  userId      String
+  workspaceId String
+  role        String @default("member")
+
+  // relations
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+model Channel {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  type        String // "text" | "voice"
+  createdAt   DateTime @default(now())
+
+  // relations
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  messages  Message[]
+
+  voiceSession VoiceSession? @relation("ChannelVoiceSession")
+
+  @@index([workspaceId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  channelId String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  // relations
+  channel Channel @relation(fields: [channelId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@index([channelId, createdAt])
+}
+
+model VoiceSession {
+  id          String   @id @default(cuid())
+  channelId   String   @unique
+  workspaceId String
+  createdAt   DateTime @default(now())
+
+  channel      Channel            @relation("ChannelVoiceSession", fields: [channelId], references: [id])
+  workspace    Workspace          @relation("WorkspaceVoiceSessions", fields: [workspaceId], references: [id])
+  participants VoiceParticipant[]
+}
+
+model VoiceParticipant {
+  id        String   @id @default(cuid())
+  sessionId String
+  userId    String
+  joinedAt  DateTime @default(now())
+
+  muted    Boolean @default(false)
+  deafened Boolean @default(false)
+
+  session VoiceSession @relation(fields: [sessionId], references: [id])
+  user    User         @relation("UserVoiceParticipants", fields: [userId], references: [id])
+
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+}

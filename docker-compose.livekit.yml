@@ -1,0 +1,11 @@
+services:
+  livekit:
+    image: livekit/livekit-server:latest
+    command: ["/livekit-server", "--config", "/etc/livekit.yaml", "--node-ip", "127.0.0.1"]
+    ports:
+      - "7880:7880"         # HTTP / WebSocket signaling
+      - "7881:7881"         # TCP TURN (optional)
+      - "7882:7882/udp"     # UDP TURN / WebRTC
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+    restart: unless-stopped

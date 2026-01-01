@@ -1,0 +1,11 @@
+port: 7880
+rtc:
+  udp_port: 7882
+  tcp_port: 7881
+
+keys:
+  devkey: devsecret
+
+# Für lokale Entwicklung ok. Für Prod brauchst du TLS + Domain.
+logging:
+  level: info

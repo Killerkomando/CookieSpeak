@@ -1,0 +1,15 @@
+{
+  "name": "@tsa/media-core",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "lint": "echo \"(optional)\""
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
