@@ -1,4 +1,4 @@
-# teamspeak-alt (MVP)
+# CookieSpeak (MVP)
 
 ## Voraussetzungen
 - pnpm (Node 20+ empfohlen)
